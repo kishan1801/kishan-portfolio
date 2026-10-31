@@ -2,7 +2,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Loader2, Inbox, RefreshCw, CheckCircle2, AlertTriangle, Clock3 } from "lucide-react";
 
-const BACKEND_URL = (process.env.REACT_APP_BACKEND_URL || "http://127.0.0.1:8000").replace(/\/+$/, "");
+const BACKEND_URL = (
+  import.meta.env.VITE_BACKEND_URL ||
+  import.meta.env.REACT_APP_BACKEND_URL ||
+  "http://127.0.0.1:8000"
+).replace(/\/+$/, "");
 const API = `${BACKEND_URL}/api`;
 
 const statusPresentation = (status) => {

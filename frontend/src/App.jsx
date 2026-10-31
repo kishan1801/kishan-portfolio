@@ -9,7 +9,7 @@ import { Toaster } from "sonner";
 import { ChatContext, ThemeContext } from "@/context/AppContexts";
 import "@/App.css";
 
-function App() {
+const App = () => {
   const [theme, setTheme] = useState(
     () => localStorage.getItem("kk-theme") || "dark",
   );
@@ -56,12 +56,7 @@ function App() {
       }}
     >
       <ChatContext.Provider value={{ open: chatOpen, setOpen: setChatOpen }}>
-        <BrowserRouter
-          future={{
-            v7_startTransition: true,
-            v7_relativeSplatPath: true,
-          }}
-        >
+        <BrowserRouter>
           <div className="site-shell min-h-screen text-foreground">
             <Routes>
               <Route path="/" element={<Home />} />

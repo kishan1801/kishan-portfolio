@@ -7,7 +7,9 @@ import Logo from "@/components/Logo";
 import { SUGGESTED_QUESTIONS } from "@/data/portfolio";
 
 const BACKEND_URL = (
-  process.env.REACT_APP_BACKEND_URL || "http://127.0.0.1:8000"
+  import.meta.env.VITE_BACKEND_URL ||
+  import.meta.env.REACT_APP_BACKEND_URL ||
+  "http://127.0.0.1:8000"
 ).replace(/\/+$/, "");
 const API = `${BACKEND_URL}/api`;
 

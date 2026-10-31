@@ -4,7 +4,11 @@ import { toast } from "sonner";
 import { Reveal, SectionHeading } from "@/components/Reveal";
 import { PROFILE } from "@/data/portfolio";
 
-const BACKEND_URL = (process.env.REACT_APP_BACKEND_URL || "http://127.0.0.1:8000").replace(/\/+$/, "");
+const BACKEND_URL = (
+  import.meta.env.VITE_BACKEND_URL ||
+  import.meta.env.REACT_APP_BACKEND_URL ||
+  "http://127.0.0.1:8000"
+).replace(/\/+$/, "");
 const API = `${BACKEND_URL}/api`;
 
 const EMPTY_FORM = {
