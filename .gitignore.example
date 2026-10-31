@@ -1,0 +1,13 @@
+# Merge these entries into the project's existing .gitignore; do not replace other rules blindly.
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+__pycache__/
+*.py[cod]
+node_modules/
+build/
+dist/
+.coverage

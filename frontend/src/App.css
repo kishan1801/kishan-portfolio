@@ -1,0 +1,484 @@
+html {
+  scroll-behavior: smooth;
+}
+body {
+  min-width: 320px;
+}
+::selection {
+  background: rgba(59, 130, 246, 0.28);
+}
+.glass-panel {
+  backdrop-filter: blur(18px);
+}
+.text-gradient {
+  background: linear-gradient(110deg, #38bdf8 0%, #818cf8 55%, #c084fc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.eyebrow {
+  color: #0891b2;
+  font:
+    600 11px/1.4 "JetBrains Mono",
+    ui-monospace,
+    monospace;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.dark .eyebrow {
+  color: #67e8f9;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+.grid-lines {
+  background-image:
+    linear-gradient(to right, rgba(100, 116, 139, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(100, 116, 139, 0.08) 1px, transparent 1px);
+  background-size: 52px 52px;
+  mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+}
+.noise::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+}
+
+/* Subtle ambient depth: decorative only, with no impact on content contrast. */
+.site-shell {
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+}
+.site-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse at 7% 10%,
+      rgba(59, 130, 246, 0.075),
+      transparent 36%
+    ),
+    radial-gradient(
+      ellipse at 93% 42%,
+      rgba(139, 92, 246, 0.06),
+      transparent 32%
+    );
+}
+.dark .site-shell::before {
+  background:
+    radial-gradient(
+      ellipse at 7% 10%,
+      rgba(59, 130, 246, 0.12),
+      transparent 36%
+    ),
+    radial-gradient(
+      ellipse at 93% 42%,
+      rgba(139, 92, 246, 0.09),
+      transparent 32%
+    );
+}
+
+.glass-panel {
+  background-color: color-mix(in srgb, hsl(var(--card)) 76%, transparent);
+  border-color: hsl(var(--border) / 0.85);
+}
+
+.chat-thinking {
+  width: fit-content;
+  max-width: 100%;
+  border: 1px solid hsl(var(--border) / 0.8);
+  border-radius: 14px;
+  background: hsl(var(--card) / 0.72);
+}
+
+[data-testid^="project-card-"] {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+[data-testid^="project-card-"]::before {
+  content: "";
+  position: absolute;
+  inset: 0 18% auto;
+  height: 1px;
+  opacity: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(103, 232, 249, 0.85),
+    transparent
+  );
+  transition: opacity 240ms ease;
+}
+[data-testid^="project-card-"]:hover::before {
+  opacity: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  a,
+  button {
+    transition-timing-function: cubic-bezier(0.2, 0.75, 0.25, 1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-shell::before {
+    display: none;
+  }
+  [data-testid^="project-card-"]::before {
+    transition: none;
+  }
+}
+
+/* Anime AI companion: an original character with a calm idle loop and an active response state. */
+.chat-companion {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex: 0 0 auto;
+  min-height: 204px;
+  margin: 14px 16px 0;
+  overflow: hidden;
+  border: 1px solid rgba(129, 140, 248, 0.28);
+  border-radius: 20px;
+  color: #f8fafc;
+  background:
+    radial-gradient(
+      ellipse at 83% 38%,
+      rgba(34, 211, 238, 0.17),
+      transparent 36%
+    ),
+    linear-gradient(115deg, #0a1124 0%, #11182f 48%, #251544 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 16px 42px -30px rgba(56, 189, 248, 0.75);
+}
+.chat-companion::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.22;
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.1) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: linear-gradient(90deg, transparent, #000 55%, #000);
+}
+.chat-companion__glow {
+  position: absolute;
+  z-index: -1;
+  width: 150px;
+  aspect-ratio: 1;
+  top: -65px;
+  right: 7px;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.38);
+  filter: blur(30px);
+  animation: companion-glow 4.8s ease-in-out infinite alternate;
+}
+.chat-companion__copy {
+  position: relative;
+  z-index: 2;
+  align-self: center;
+  width: 61%;
+  padding: 18px 0 18px 17px;
+}
+.chat-companion__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0 0 9px;
+  color: #7dd3fc;
+  font:
+    600 9px/1.4 "JetBrains Mono",
+    ui-monospace,
+    monospace;
+  letter-spacing: 0.12em;
+}
+.chat-companion__eyebrow svg {
+  flex: 0 0 auto;
+  color: #c4b5fd;
+}
+.chat-companion__headline {
+  max-width: 170px;
+  margin: 0 0 7px;
+  font:
+    700 clamp(16px, 4.5vw, 19px)/1.18 "Space Grotesk",
+    Inter,
+    sans-serif;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.chat-companion__subtitle {
+  max-width: 158px;
+  min-height: 28px;
+  margin: 0 0 12px;
+  color: rgba(226, 232, 240, 0.8);
+  font-size: 10px;
+  line-height: 1.45;
+}
+.chat-companion__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 22px;
+  padding: 4px 8px;
+  border: 1px solid rgba(103, 232, 249, 0.18);
+  border-radius: 999px;
+  background: rgba(8, 145, 178, 0.12);
+  color: #a5f3fc;
+  font:
+    600 8px/1.2 "JetBrains Mono",
+    ui-monospace,
+    monospace;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+.chat-companion__status-dot {
+  width: 5px;
+  height: 5px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #67e8f9;
+  box-shadow: 0 0 9px rgba(103, 232, 249, 0.85);
+  animation: companion-status-pulse 1.8s ease-in-out infinite;
+}
+.chat-companion__art {
+  position: absolute;
+  z-index: 1;
+  right: -1px;
+  bottom: -2px;
+  width: 51%;
+  height: 100%;
+  min-width: 138px;
+  pointer-events: none;
+}
+.chat-companion__art img {
+  position: absolute;
+  right: -3px;
+  bottom: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  transform-origin: 56% 83%;
+  filter: drop-shadow(0 7px 15px rgba(34, 211, 238, 0.2));
+  animation: companion-idle 5.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  user-select: none;
+}
+.chat-companion__orbit {
+  position: absolute;
+  z-index: 1;
+  right: 26%;
+  top: 18px;
+  width: 62px;
+  height: 28px;
+  border: 1px solid rgba(103, 232, 249, 0.52);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: rotate(-30deg);
+  box-shadow: 0 0 13px rgba(34, 211, 238, 0.12);
+  animation: companion-orbit 7s linear infinite;
+}
+.chat-companion__orbit--two {
+  right: 26%;
+  top: 18px;
+  width: 62px;
+  height: 28px;
+  border-color: rgba(196, 181, 253, 0.56);
+  transform: rotate(55deg);
+  animation-duration: 9s;
+  animation-direction: reverse;
+}
+.chat-companion--active .chat-companion__art img {
+  animation: companion-action 1.05s cubic-bezier(0.4, 0, 0.2, 1) infinite
+    alternate;
+  filter: drop-shadow(0 8px 20px rgba(34, 211, 238, 0.36));
+}
+.chat-companion--active .chat-companion__glow {
+  background: rgba(34, 211, 238, 0.44);
+  animation-duration: 1.3s;
+}
+.chat-companion--active .chat-companion__orbit {
+  border-color: rgba(103, 232, 249, 0.9);
+  animation-duration: 1.8s;
+}
+.chat-companion--active .chat-companion__status-dot {
+  background: #c4b5fd;
+  box-shadow: 0 0 12px rgba(196, 181, 253, 0.95);
+}
+@keyframes companion-idle {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-0.5deg);
+  }
+  18% {
+    transform: translate3d(-2px, -4px, 0) rotate(0.3deg);
+  }
+  38% {
+    transform: translate3d(1px, -1px, 0) rotate(1deg);
+  }
+  56% {
+    transform: translate3d(-2px, -7px, 0) rotate(0.2deg);
+  }
+  78% {
+    transform: translate3d(1px, -3px, 0) rotate(-1deg);
+  }
+}
+@keyframes companion-action {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(-1deg) scale(1);
+  }
+  45% {
+    transform: translate3d(-5px, -11px, 0) rotate(1.8deg) scale(1.035);
+  }
+  100% {
+    transform: translate3d(-2px, -4px, 0) rotate(-0.2deg) scale(1.012);
+  }
+}
+@keyframes companion-orbit {
+  from {
+    transform: rotate(-30deg) scale(0.92);
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.95;
+  }
+  to {
+    transform: rotate(330deg) scale(1.08);
+    opacity: 0.55;
+  }
+}
+@keyframes companion-glow {
+  from {
+    opacity: 0.45;
+    transform: scale(0.88);
+  }
+  to {
+    opacity: 0.85;
+    transform: scale(1.12);
+  }
+}
+@keyframes companion-status-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+@media (max-width: 380px) {
+  .chat-companion {
+    min-height: 184px;
+    margin-right: 12px;
+    margin-left: 12px;
+  }
+  .chat-companion__copy {
+    padding-left: 13px;
+    width: 62%;
+  }
+  .chat-companion__eyebrow {
+    font-size: 8px;
+    letter-spacing: 0.08em;
+  }
+  .chat-companion__art {
+    width: 49%;
+    min-width: 126px;
+  }
+  .chat-companion__orbit {
+    right: 26%;
+  }
+  .chat-companion__orbit--two {
+    right: 26%;
+  }
+}
+@media (max-height: 640px) {
+  .chat-companion {
+    min-height: 156px;
+    margin-top: 8px;
+  }
+}
+@media (max-height: 480px) {
+  .chat-companion { min-height: 132px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chat-companion__glow,
+  .chat-companion__art img,
+  .chat-companion__orbit,
+  .chat-companion__status-dot {
+    animation: none !important;
+  }
+}
+
+/* Small animated energy particles help the personal anime avatar feel alive between messages. */
+.chat-companion__spark {
+  position: absolute;
+  z-index: 1;
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: #a5f3fc;
+  box-shadow: 0 0 10px 2px rgba(34, 211, 238, 0.65);
+  animation: companion-spark-drift 3.6s ease-in-out infinite;
+}
+.chat-companion__spark--one {
+  top: 48%;
+  right: 34%;
+  animation-delay: -0.6s;
+}
+.chat-companion__spark--two {
+  top: 72%;
+  right: 27%;
+  width: 3px;
+  height: 3px;
+  background: #c4b5fd;
+  box-shadow: 0 0 9px 2px rgba(167, 139, 250, 0.7);
+  animation-delay: -2s;
+}
+.chat-companion__spark--three {
+  top: 25%;
+  right: 18%;
+  width: 3px;
+  height: 3px;
+  animation-delay: -1.2s;
+}
+@keyframes companion-spark-drift {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: translate3d(0, 5px, 0) scale(0.7);
+  }
+  45% {
+    opacity: 1;
+    transform: translate3d(-7px, -8px, 0) scale(1.25);
+  }
+  75% {
+    opacity: 0.65;
+    transform: translate3d(3px, -3px, 0) scale(0.9);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chat-companion__spark {
+    animation: none !important;
+  }
+}

@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 210 40% 98%;
+  --foreground: 222 47% 11%;
+  --card: 0 0% 100%;
+  --secondary: 214 32% 94%;
+  --secondary-foreground: 222 47% 11%;
+  --muted: 214 32% 94%;
+  --muted-foreground: 215 16% 42%;
+  --border: 214 25% 87%;
+  --destructive: 0 72% 51%;
+}
+.dark {
+  --background: 222 47% 6%;
+  --foreground: 210 40% 96%;
+  --card: 222 36% 9%;
+  --secondary: 217 29% 14%;
+  --secondary-foreground: 210 40% 96%;
+  --muted: 217 29% 14%;
+  --muted-foreground: 215 20% 66%;
+  --border: 217 24% 20%;
+  --destructive: 0 63% 45%;
+}
+* { box-sizing: border-box; }
+html { scroll-padding-top: 5rem; }
+body { margin: 0; background: hsl(var(--background)); color: hsl(var(--foreground)); font-family: Inter, ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+button, input, textarea { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 2px solid #38bdf8; outline-offset: 3px; }

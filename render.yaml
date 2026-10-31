@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: kishan-portfolio-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn server:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: AI_PROVIDER
+        value: gemini
+      - key: AI_BASE_URL
+        value: https://generativelanguage.googleapis.com/v1beta/openai
+      - key: AI_MODEL
+        value: gemini-3.5-flash-lite
+      - key: AI_API_KEY
+        sync: false
+      - key: MONGO_URL
+        sync: false
+      - key: DB_NAME
+        value: kishan_portfolio
+      - key: ADMIN_KEY
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: OWNER_EMAIL
+        value: k.kishankg120@gmail.com
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM_EMAIL
+        sync: false
+      - key: EMAIL_REPLY_TO
+        sync: false
+      - key: CONTACT_RETENTION_DAYS
+        value: "7"
+      - key: CHAT_RETENTION_DAYS
+        value: "7"
+      - key: CONTACT_HOURLY_LIMIT
+        value: "5"
+      - key: CHAT_DAILY_LIMIT
+        value: "30"
+      - key: EMAIL_RETRY_ATTEMPTS
+        value: "3"
