@@ -42,13 +42,9 @@ AI_API_KEY = (
     or os.environ.get('EMERGENT_LLM_KEY')
     or ''
 ).strip()
-RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '').strip()
+BREVO_API_KEY = os.environ.get('BREVO_API_KEY', '').strip()
 EMAIL_FROM_NAME = os.environ.get('EMAIL_FROM_NAME', 'Kishan Kumar Portfolio').strip()
-# Resend's onboarding sender is for initial testing. For production, set this to
-# an address on a domain verified in your Resend account.
-RESEND_FROM_EMAIL = os.environ.get(
-    'RESEND_FROM_EMAIL', f'{EMAIL_FROM_NAME} <onboarding@resend.dev>'
-).strip()
+BREVO_FROM_EMAIL = os.environ.get('BREVO_FROM_EMAIL', '').strip()
 EMAIL_REPLY_TO = os.environ.get('EMAIL_REPLY_TO', '').strip()
 OWNER_EMAIL = os.environ.get('OWNER_EMAIL', '').strip()
 ADMIN_KEY = os.environ.get('ADMIN_KEY', '').strip()
@@ -88,7 +84,7 @@ CHAT_RETENTION_DAYS = _positive_int_env("CHAT_RETENTION_DAYS", 7, 1, 3650)
 EMAIL_RETRY_ATTEMPTS = _positive_int_env("EMAIL_RETRY_ATTEMPTS", 3, 1, 5)
 
 
-# ---------- Email safety checks for Resend notifications ----------
+# ---------- Email safety checks for Brevo notifications ----------
 _SHORTENERS = ("bit.ly", "tinyurl.com", "t.co", "is.gd", "cutt.ly", "goo.gl", "rebrand.ly")
 _CRED_ASK = ("reply with your password", "reply with the code", "send your password", "cvv",
              "send us your password", "enter your password below", "confirm your card number",
@@ -171,53 +167,66 @@ class EmailDeliveryError(Exception):
         self.status_code = status_code
 
 
-async def send_email(*, to: str, subject: str, html: str, reply_to: Optional[str] = None) -> Optional[str]:
-    """Send a contact notification through Resend's email API."""
+async def send_email(
+    *, to: str, subject: str, html: str, reply_to: Optional[str] = None
+) -> Optional[str]:
+    """Send a contact notification through Brevo's transactional email API."""
     try:
         _assert_safe_email(subject, html)
     except ValueError as exc:
         raise EmailDeliveryError("Email failed the local safety checks", retryable=False) from exc
 
-    if not RESEND_API_KEY:
-        raise EmailDeliveryError("Resend is not configured (missing RESEND_API_KEY)", retryable=False)
+    if not BREVO_API_KEY or not BREVO_FROM_EMAIL:
+        raise EmailDeliveryError(
+            "Brevo is not configured (missing API key or sender email)",
+            retryable=False,
+        )
 
-    payload = {"from": RESEND_FROM_EMAIL, "to": [to], "subject": subject, "html": html}
+    payload = {
+        "sender": {
+            "name": EMAIL_FROM_NAME,
+            "email": BREVO_FROM_EMAIL,
+        },
+        "to": [{"email": to}],
+        "subject": subject,
+        "htmlContent": html,
+    }
     effective_reply_to = reply_to or EMAIL_REPLY_TO
     if effective_reply_to:
-        payload["reply_to"] = [effective_reply_to]
+        payload["replyTo"] = {"email": effective_reply_to}
 
     try:
         async with httpx.AsyncClient(timeout=httpx.Timeout(8.0, connect=3.0)) as http_client:
             resp = await http_client.post(
-                "https://api.resend.com/emails",
+                "https://api.brevo.com/v3/smtp/email",
                 headers={
-                    "Authorization": f"Bearer {RESEND_API_KEY}",
+                    "api-key": BREVO_API_KEY,
                     "Content-Type": "application/json",
+                    "Accept": "application/json",
                 },
                 json=payload,
             )
         if resp.is_error:
             status = resp.status_code
-            # 401/403 and most 4xx indicate configuration/validation problems.
             retryable = status == 408 or status == 429 or status >= 500
-            logger.error("Resend email send failed: HTTP %s: %s", status, resp.text[:500])
+            logger.error("Brevo email send failed: HTTP %s: %s", status, resp.text[:500])
             raise EmailDeliveryError(
-                f"Resend rejected the notification (HTTP {status})",
+                f"Brevo rejected the notification (HTTP {status})",
                 retryable=retryable,
                 status_code=status,
             )
         response_data = resp.json()
-        email_id = response_data.get("id")
-        logger.info("Resend accepted contact notification (email_id=%s)", email_id)
+        email_id = response_data.get("messageId")
+        logger.info("Brevo accepted contact notification (email_id=%s)", email_id)
         return email_id
     except EmailDeliveryError:
         raise
     except (httpx.TimeoutException, httpx.TransportError) as exc:
-        logger.warning("Resend network error: %s", type(exc).__name__)
-        raise EmailDeliveryError("Could not reach Resend; try again later", retryable=True) from exc
+        logger.warning("Brevo network error: %s", type(exc).__name__)
+        raise EmailDeliveryError("Could not reach Brevo; try again later", retryable=True) from exc
     except (ValueError, httpx.HTTPError) as exc:
-        logger.warning("Resend request failed: %s", type(exc).__name__)
-        raise EmailDeliveryError("Resend request failed; try again later", retryable=True) from exc
+        logger.warning("Brevo request failed: %s", type(exc).__name__)
+        raise EmailDeliveryError("Brevo request failed; try again later", retryable=True) from exc
 
 
 def _contact_email_html(doc: dict) -> str:
@@ -243,12 +252,12 @@ async def _deliver_contact_notification(
     message_id, doc: dict, *, claimed: bool = False, reuse_delivery_id: bool = False
 ) -> bool:
     """Send with bounded transient retries and persist each state transition."""
-    if not OWNER_EMAIL or not RESEND_API_KEY:
+    if not OWNER_EMAIL or not BREVO_API_KEY:
         await db.contact_messages.update_one(
             {"_id": message_id},
             {"$set": {
                 "email_status": "not_configured",
-                "email_last_error": "OWNER_EMAIL or RESEND_API_KEY is not configured",
+                "email_last_error": "OWNER_EMAIL or BREVO_API_KEY is not configured",
                 "email_updated_at": datetime.now(timezone.utc),
             }},
         )
@@ -648,7 +657,7 @@ async def contact(req: ContactIn, request: Request):
             detail="Too many messages from your network. Please email Kishan directly instead.",
         )
 
-    notification_configured = bool(OWNER_EMAIL and RESEND_API_KEY)
+    notification_configured = bool(OWNER_EMAIL and BREVO_API_KEY)
     doc = {
         "name": req.name,
         "email": str(req.email),
@@ -719,10 +728,10 @@ async def retry_contact_notification(message_id: str):
         raise HTTPException(status_code=404, detail="Contact message not found")
     if doc.get("email_status") == "sent":
         return {"status": "sent", "email_notified": True}
-    if not OWNER_EMAIL or not RESEND_API_KEY:
+    if not OWNER_EMAIL or not BREVO_API_KEY:
         raise HTTPException(
             status_code=503,
-            detail="Configure OWNER_EMAIL, RESEND_API_KEY, and a verified RESEND_FROM_EMAIL before retrying.",
+            detail="Configure OWNER_EMAIL, BREVO_API_KEY, and BREVO_FROM_EMAIL before retrying.",
         )
     recovered_stale_delivery = False
     if doc.get("email_status") == "sending":
