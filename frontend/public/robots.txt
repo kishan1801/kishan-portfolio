@@ -1,4 +1,4 @@
 ﻿User-agent: *
 Allow: /
 
-Sitemap: https://kishan1801.com/sitemap.xml
+Sitemap: https://kishan-portfolio-4so.pages.dev/sitemap.xml
