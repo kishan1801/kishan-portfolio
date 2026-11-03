@@ -13,7 +13,7 @@ import Footer from "@/components/Footer";
 
 const Home = () => {
   useEffect(() => {
-    document.title = "Kishan Kumar — Full-Stack Developer | MERN & Backend";
+    document.title = "Kishan Kumar | Full-Stack Developer in Bengaluru";
   }, []);
 
   return (
