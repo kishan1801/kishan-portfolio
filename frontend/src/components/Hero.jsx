@@ -78,7 +78,7 @@ const Hero = () => {
           <h1 className="font-display font-extrabold tracking-tighter text-4xl sm:text-5xl lg:text-6xl leading-[1.05]" data-testid="hero-title">
             <MaskedLine delay={0.15}>{PROFILE.name}</MaskedLine>
             <MaskedLine delay={0.3} className="text-gradient">
-              MERN Stack Developer
+              Full-Stack Developer
             </MaskedLine>
           </h1>
 
