@@ -176,9 +176,9 @@ async def send_email(
     except ValueError as exc:
         raise EmailDeliveryError("Email failed the local safety checks", retryable=False) from exc
 
-    if not BREVO_API_KEY or not BREVO_FROM_EMAIL:
+    if not OWNER_EMAIL or not BREVO_API_KEY or not BREVO_FROM_EMAIL:
         raise EmailDeliveryError(
-            "Brevo is not configured (missing API key or sender email)",
+            "Brevo is not configured (missing owner email, API key, or sender email)",
             retryable=False,
         )
 
@@ -252,12 +252,12 @@ async def _deliver_contact_notification(
     message_id, doc: dict, *, claimed: bool = False, reuse_delivery_id: bool = False
 ) -> bool:
     """Send with bounded transient retries and persist each state transition."""
-    if not OWNER_EMAIL or not BREVO_API_KEY:
+    if not OWNER_EMAIL or not BREVO_API_KEY or not BREVO_FROM_EMAIL:
         await db.contact_messages.update_one(
             {"_id": message_id},
             {"$set": {
                 "email_status": "not_configured",
-                "email_last_error": "OWNER_EMAIL or BREVO_API_KEY is not configured",
+                "email_last_error": "OWNER_EMAIL, BREVO_API_KEY, or BREVO_FROM_EMAIL is not configured",
                 "email_updated_at": datetime.now(timezone.utc),
             }},
         )
@@ -657,7 +657,7 @@ async def contact(req: ContactIn, request: Request):
             detail="Too many messages from your network. Please email Kishan directly instead.",
         )
 
-    notification_configured = bool(OWNER_EMAIL and BREVO_API_KEY)
+    notification_configured = bool(OWNER_EMAIL and BREVO_API_KEY and BREVO_FROM_EMAIL)
     doc = {
         "name": req.name,
         "email": str(req.email),
@@ -728,7 +728,7 @@ async def retry_contact_notification(message_id: str):
         raise HTTPException(status_code=404, detail="Contact message not found")
     if doc.get("email_status") == "sent":
         return {"status": "sent", "email_notified": True}
-    if not OWNER_EMAIL or not BREVO_API_KEY:
+    if not OWNER_EMAIL or not BREVO_API_KEY or not BREVO_FROM_EMAIL:
         raise HTTPException(
             status_code=503,
             detail="Configure OWNER_EMAIL, BREVO_API_KEY, and BREVO_FROM_EMAIL before retrying.",

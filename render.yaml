@@ -26,9 +26,9 @@ services:
         sync: false
       - key: OWNER_EMAIL
         value: k.kishankg120@gmail.com
-      - key: RESEND_API_KEY
+      - key: BREVO_API_KEY
         sync: false
-      - key: RESEND_FROM_EMAIL
+      - key: BREVO_FROM_EMAIL
         sync: false
       - key: EMAIL_REPLY_TO
         sync: false
