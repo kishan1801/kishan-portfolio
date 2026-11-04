@@ -10,9 +10,9 @@ export const PROFILE = {
   intro:
     "I build practical web applications and backend systems, with hands-on experience from independent projects and a clear goal: to earn my first professional software development role.",
   about: [
-    "I'm a BCA graduate from CMR University, Bengaluru, and a full-stack developer trained through 10x Academy. I enjoy understanding how applications work under the hood, from data modelling and API design to responsive interfaces.",
+    "I'm a BCA graduate (2021–2024) from CMR University, Bengaluru, and a full-stack developer trained through 10x Academy with JavaScript and MERN stack skills. I enjoy understanding how applications work under the hood, from data modelling and API design to responsive interfaces.",
     "My hands-on project work includes an e-commerce application with a simulated HMAC-SHA256 payment-verification flow, a recipe app with Cloudinary image delivery, and a real-estate platform with role-based access, AWS S3 pre-signed URLs, and Socket.IO updates.",
-    "I'm actively seeking my first company-based software development role or internship. My technical experience comes from building, debugging, and deploying projects independently; I don't present those projects as full-time company employment.",
+    "I'm actively seeking my first professional software development role or internship. My technical experience comes from building, debugging, and deploying projects independently; I don't present those projects as full-time company employment.",
   ],
   emails: ["k.kishankg120@gmail.com", "kishan1801@zohomail.in"],
   github: "https://github.com/kishan1801",
@@ -167,7 +167,7 @@ export const TIMELINE = [
     period: "Jun 2024",
     title: "BCA — CMR University, Bengaluru",
     type: "Education",
-    detail: "Completed a Bachelor of Computer Applications with a foundation in computer science, databases, and software development. CGPA: 7.78/10.",
+    detail: "Completed a Bachelor of Computer Applications with a foundation in computer science, databases, and software development. CGPA: 7.72/10.",
   },
   {
     period: "Oct 2024 – Present",
